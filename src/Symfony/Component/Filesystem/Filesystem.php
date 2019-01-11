@@ -567,6 +567,10 @@ class Filesystem
         }
 
         foreach ($iterator as $file) {
+            if ($file->getPathName() === $targetDir) {
+                continue;
+            }
+
             $target = $targetDir.substr($file->getPathname(), $originDirLen);
 
             if ($copyOnWindows) {
