@@ -713,14 +713,16 @@ class YamlFileLoader extends FileLoader
                 if (\is_string($argument) && $argument) {
                     return new TaggedIteratorArgument($argument);
                 }
-                if (\is_array($argument) && isset($argument['name']) && $argument['name']) {
-                    if (array_diff(array_keys($argument), ['name', 'index_by', 'default_index_method'])) {
-                        throw new InvalidArgumentException('"!tagged" tag contains unsupported keys. Supported are: "name, index_by, default_index_method".');
+
+                if (\is_array($argument) && isset($argument['tag']) && $argument['tag']) {
+                    if ($diff = array_diff(array_keys($argument), ['tag', 'index_by', 'default_index_method'])) {
+                        throw new InvalidArgumentException(sprintf('"!tagged" tag contains unsupported key "%s"; supported ones are "tag", "index_by" and "default_index_method".', implode(', ', $diff)));
                     }
 
-                    return new TaggedIteratorArgument($argument['name'], $argument['index_by'] ?? null, $argument['default_index_method'] ?? null);
+                    return new TaggedIteratorArgument($argument['tag'], $argument['index_by'] ?? null, $argument['default_index_method'] ?? null);
                 }
-                throw new InvalidArgumentException(sprintf('"!tagged" tag only accepts a non empty string or an array with a key "name" in "%s".', $file));
+
+                throw new InvalidArgumentException(sprintf('"!tagged" tags only accept a non empty string or an array with a key "tag" in "%s".', $file));
             }
             if ('service' === $value->getTag()) {
                 if ($isParameter) {

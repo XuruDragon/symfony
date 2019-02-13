@@ -14,10 +14,14 @@ namespace Symfony\Component\DependencyInjection\Tests\Compiler;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\Alias;
+use Symfony\Component\DependencyInjection\Argument\TaggedIteratorArgument;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\ServiceSubscriberInterface;
+use Symfony\Component\DependencyInjection\Tests\Fixtures\BarTagClass;
+use Symfony\Component\DependencyInjection\Tests\Fixtures\FooBarTaggedClass;
+use Symfony\Component\DependencyInjection\Tests\Fixtures\FooTagClass;
 
 /**
  * This class tests the integration of the different compiler passes.
@@ -233,6 +237,54 @@ class IntegrationTest extends TestCase
             'main_service_expected',
             $container,
         ];
+    }
+
+    public function testTaggedServiceWithIndexAttribute()
+    {
+        $container = new ContainerBuilder();
+        $container->register('bar_tag_service', BarTagClass::class)
+            ->setPublic(true)
+            ->addTag('foo_bar', ['foo' => 'bar'])
+        ;
+        $container->register('foo_tag_service', FooTagClass::class)
+            ->setPublic(true)
+            ->addTag('foo_bar')
+        ;
+        $container->register('foobar_tagged_service', FooBarTaggedClass::class)
+            ->addArgument(new TaggedIteratorArgument('foo_bar', 'foo'))
+            ->setPublic(true)
+        ;
+
+        $container->compile();
+
+        $s = $container->get('foobar_tagged_service');
+
+        $param = iterator_to_array($s->getParam()->getIterator());
+        $this->assertSame(['bar' => $container->get('bar_tag_service'), 'foo_tag_class' => $container->get('foo_tag_service')], $param);
+    }
+
+    public function testTaggedServiceWithIndexAttributeAndDefaultMethod()
+    {
+        $container = new ContainerBuilder();
+        $container->register('bar_tag_service', BarTagClass::class)
+            ->setPublic(true)
+            ->addTag('foo_bar')
+        ;
+        $container->register('foo_tag_service', FooTagClass::class)
+            ->setPublic(true)
+            ->addTag('foo_bar', ['foo' => 'foo'])
+        ;
+        $container->register('foobar_tagged_service', FooBarTaggedClass::class)
+            ->addArgument(new TaggedIteratorArgument('foo_bar', 'foo', 'getFooBar'))
+            ->setPublic(true)
+        ;
+
+        $container->compile();
+
+        $s = $container->get('foobar_tagged_service');
+
+        $param = iterator_to_array($s->getParam()->getIterator());
+        $this->assertSame(['bar_tab_class_with_defaultmethod' => $container->get('bar_tag_service'), 'foo' => $container->get('foo_tag_service')], $param);
     }
 }
 
