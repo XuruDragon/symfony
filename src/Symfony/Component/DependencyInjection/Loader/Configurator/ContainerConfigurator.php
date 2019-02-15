@@ -96,11 +96,15 @@ function inline(string $class = null): InlineServiceConfigurator
 /**
  * Creates a service locator.
  *
- * @param ReferenceConfigurator[] $values
+ * @param array|TaggedIteratorArgument|ReferenceConfigurator[] $values
  */
-function service_locator(array $values): ServiceLocatorArgument
+function service_locator($values): ServiceLocatorArgument
 {
-    return new ServiceLocatorArgument(AbstractConfigurator::processValue($values, true));
+    if (!$values instanceof TaggedIteratorArgument) {
+        $values = AbstractConfigurator::processValue($values, true);
+    }
+
+    return new ServiceLocatorArgument($values);
 }
 
 /**

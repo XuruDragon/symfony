@@ -6,7 +6,9 @@
       <tag name="foo_tag"/>
     </service>
     <service id="foo_tagged_iterator" class="Bar" public="true">
-      <argument type="tagged" tag="foo_tag" index-by="barfoo" default-index-method="foobar"/>
+      <argument type="service_locator">
+        <argument type="tagged" tag="foo_tag" index-by="barfoo" default-index-method="foobar"/>
+      </argument>
     </service>
     <service id="Psr\Container\ContainerInterface" alias="service_container" public="false"/>
     <service id="Symfony\Component\DependencyInjection\ContainerInterface" alias="service_container" public="false"/>
