@@ -571,7 +571,7 @@ class Filesystem
 
         foreach ($iterator as $file) {
             var_dump($file->getPathName());
-            var_dump($file->getRealPath()());
+            var_dump($file->getRealPath());
             var_dump($targetDir);
             var_dump($targetDirInfo->getPathName());
             if ($file->getPathName() === $targetDir || (false !== $file->getRealPath() && $file->getRealPath() === $targetDirInfo->getRealPath())) {
