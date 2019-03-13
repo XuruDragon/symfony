@@ -568,6 +568,7 @@ class Filesystem
 
         $this->mkdir($targetDir);
         $targetDirInfo = new \SplFileInfo($targetDir);
+        $regex = sprintf('/^%s.*/', str_replace('/', '\/', $targetDirInfo->getRealPath() ? $targetDirInfo->getRealPath() : $targetDir));
 
         foreach ($iterator as $file) {
             var_dump($file->getPathName());
@@ -577,6 +578,11 @@ class Filesystem
             var_dump("condition {$file->getPathName()} === $targetDir || {$file->getRealPath()} === {$targetDirInfo->getRealPath()} :".(($file->getPathName() === $targetDir || (false !== $file->getRealPath() && $file->getRealPath() === $targetDirInfo->getRealPath())) ? "oui" : "non"));
             if ($file->getPathName() === $targetDir || (false !== $file->getRealPath() && $file->getRealPath() === $targetDirInfo->getRealPath())) {
                 var_dump('---continue---');
+                continue;
+            }
+
+            if (preg_match($regex, $file->getRealPath())) {
+                var_dump('---in target dir -- continue---');
                 continue;
             }
 
