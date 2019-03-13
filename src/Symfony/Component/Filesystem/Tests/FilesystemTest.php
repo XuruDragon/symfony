@@ -1364,14 +1364,14 @@ class FilesystemTest extends FilesystemTestCase
 
         $this->filesystem->mirror($sourcePath, $targetPath, null, ['delete' => true]);
 
-        $this->assertTrue(is_dir($targetPath));
-        $this->assertTrue(is_dir($targetPath.'directory'));
+        $this->assertTrue($this->filesystem->exists($targetPath));
+        $this->assertTrue($this->filesystem->exists($targetPath.'directory'));
 
         $this->assertFileEquals($file1, $targetPath.'directory'.\DIRECTORY_SEPARATOR.'file1');
         $this->assertFileEquals($file2, $targetPath.'file2');
 
         var_dump($targetPath.'target');
-        $this->assertFalse(is_dir($targetPath.'target'));
+        $this->assertFalse($this->filesystem->exists($targetPath.'target'));
     }
 
     /**
