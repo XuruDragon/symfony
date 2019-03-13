@@ -1370,7 +1370,6 @@ class FilesystemTest extends FilesystemTestCase
         $this->assertFileEquals($file1, $targetPath.'directory'.\DIRECTORY_SEPARATOR.'file1');
         $this->assertFileEquals($file2, $targetPath.'file2');
 
-        var_dump($targetPath.'target');
         $this->assertFalse($this->filesystem->exists($targetPath.'target'));
     }
 
