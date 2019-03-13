@@ -574,6 +574,7 @@ class Filesystem
             var_dump($file->getRealPath());
             var_dump($targetDir);
             var_dump($targetDirInfo->getPathName());
+            var_dump("condition {$file->getPathName()} === $targetDir || {$file->getRealPath()} === {$targetDirInfo->getRealPath()} :".(($file->getPathName() === $targetDir || (false !== $file->getRealPath() && $file->getRealPath() === $targetDirInfo->getRealPath())) ? "oui" : "non"));
             if ($file->getPathName() === $targetDir || (false !== $file->getRealPath() && $file->getRealPath() === $targetDirInfo->getRealPath())) {
                 continue;
             }
