@@ -576,6 +576,7 @@ class Filesystem
             var_dump($targetDirInfo->getPathName());
             var_dump("condition {$file->getPathName()} === $targetDir || {$file->getRealPath()} === {$targetDirInfo->getRealPath()} :".(($file->getPathName() === $targetDir || (false !== $file->getRealPath() && $file->getRealPath() === $targetDirInfo->getRealPath())) ? "oui" : "non"));
             if ($file->getPathName() === $targetDir || (false !== $file->getRealPath() && $file->getRealPath() === $targetDirInfo->getRealPath())) {
+                var_dump('---continue---');
                 continue;
             }
 
@@ -584,8 +585,10 @@ class Filesystem
             if (!$copyOnWindows && is_link($file)) {
                 $this->symlink($file->getLinkTarget(), $target);
             } elseif (is_dir($file)) {
+                var_dump('---MKDIR--- '.$target);
                 $this->mkdir($target);
             } elseif (is_file($file)) {
+                var_dump('---COPY--- '.$file.' --TO-- '.$target);
                 $this->copy($file, $target, isset($options['override']) ? $options['override'] : false);
             } else {
                 throw new IOException(sprintf('Unable to guess "%s" file type.', $file), 0, null, $file);
